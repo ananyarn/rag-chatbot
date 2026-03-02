@@ -1,4 +1,4 @@
-# RAG//TERMINAL
+# RAG TERMINAL
 
 > A fully local AI chatbot with document upload and RAG. No API keys. No internet. Runs entirely on your machine.
 
