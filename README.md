@@ -1,211 +1,200 @@
-<div align="center">
+================================================================
+        RAG//TERMINAL — SETUP GUIDE
+================================================================
 
-<img src="https://img.shields.io/badge/STATUS-ONLINE-39ff14?style=for-the-badge&labelColor=050508"/>
-<img src="https://img.shields.io/badge/LICENSE-MIT-9b30ff?style=for-the-badge&labelColor=050508"/>
-<img src="https://img.shields.io/badge/PYTHON-3.11-bf6fff?style=for-the-badge&labelColor=050508&logo=python&logoColor=bf6fff"/>
-<img src="https://img.shields.io/badge/DOCKER-READY-0db7ed?style=for-the-badge&labelColor=050508&logo=docker&logoColor=0db7ed"/>
+WHAT YOU NEED INSTALLED BEFORE STARTING
+-----------------------------------------
+1. Python 3.11+       https://www.python.org/downloads/
+2. Ollama             https://ollama.com/download
+3. Docker (optional)  https://www.docker.com/products/docker-desktop
 
-<br/><br/>
 
-```
-██████╗  █████╗  ██████╗    ████████╗███████╗██████╗ ███╗   ███╗██╗███╗   ██╗ █████╗ ██╗     
-██╔══██╗██╔══██╗██╔════╝    ╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██║████╗  ██║██╔══██╗██║     
-██████╔╝███████║██║  ███╗      ██║   █████╗  ██████╔╝██╔████╔██║██║██╔██╗ ██║███████║██║     
-██╔══██╗██╔══██║██║   ██║      ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║██║██║╚██╗██║██╔══██║██║     
-██║  ██║██║  ██║╚██████╔╝      ██║   ███████╗██║  ██║██║ ╚═╝ ██║██║██║ ╚████║██║  ██║███████╗
-╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝       ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝
-```
+================================================================
+STEP 1 — DOWNLOAD THE PROJECT
+================================================================
 
-### `// LOCAL AI · RAG · NO API KEYS · 100% OFFLINE`
+Option A: Clone with Git
+    git clone https://github.com/YOUR-USERNAME/rag-chatbot.git
+    cd rag-chatbot
 
-*A fully local Retrieval-Augmented Generation chatbot powered by **Gemma** + **Ollama***
+Option B: Download ZIP from GitHub
+    - Click the green "Code" button on GitHub
+    - Click "Download ZIP"
+    - Extract the folder
+    - Open a terminal inside the extracted folder
 
-</div>
 
----
+================================================================
+STEP 2 — PULL THE AI MODEL
+================================================================
 
-## ◈ Overview
+Make sure Ollama is installed, then run:
 
-A fully local **Retrieval-Augmented Generation (RAG)** chatbot built as part of an **AI Advanced Skill Development Lab**. It runs entirely on your machine — no OpenAI, no paid APIs, no internet required after setup.
+    ollama pull gemma:2b
 
-Upload **PDF** or **TXT** documents and ask questions about them. The chatbot splits your documents into chunks, stores them as vector embeddings in **ChromaDB**, and retrieves the most relevant context before passing it to **Gemma** (via Ollama) to generate accurate, grounded answers.
+This downloads the Gemma AI model (~1.5GB). Wait for it to finish.
+You only need to do this once.
 
-> Built with FastAPI · LangChain · ChromaDB · and a custom **purple hacker-terminal UI**. Dockerized for easy deployment.
 
----
+================================================================
+STEP 3 — SET UP PYTHON ENVIRONMENT
+================================================================
 
-## ◈ Features
+Navigate into the backend folder:
 
-| Feature | Description |
-|---|---|
-| 🧠 **Local LLM** | Runs Gemma 2B entirely on your machine via Ollama |
-| 📄 **Document Upload** | Drag-and-drop PDF and TXT file support |
-| 🔍 **RAG Pipeline** | Retrieves relevant chunks before answering |
-| 🗄️ **Vector Storage** | ChromaDB stores embeddings locally as files |
-| 🐳 **Dockerized** | One command setup with docker-compose |
-| 🔒 **100% Private** | No data leaves your machine, ever |
-| 💜 **Hacker UI** | Purple terminal aesthetic with matrix rain |
+    cd backend
 
----
+Create a virtual environment:
 
-## ◈ Tech Stack
+    python -m venv venv
 
-```
-┌─────────────────────────────────────────────────────┐
-│                                                     │
-│   FRONTEND        HTML · CSS · Vanilla JS           │
-│   BACKEND         Python · FastAPI · Uvicorn        │
-│   LLM RUNTIME     Ollama · Gemma 2B                 │
-│   RAG FRAMEWORK   LangChain                         │
-│   VECTOR DB       ChromaDB                          │
-│   EMBEDDINGS      sentence-transformers (local)     │
-│   CONTAINERS      Docker · docker-compose           │
-│                                                     │
-└─────────────────────────────────────────────────────┘
-```
+Activate it:
 
----
+    Windows (PowerShell):   .\venv\Scripts\Activate.ps1
+    Windows (CMD):          venv\Scripts\activate.bat
+    Mac / Linux:            source venv/bin/activate
 
-## ◈ Project Structure
+You should see (venv) appear at the start of your terminal line.
 
-```
+Install dependencies:
+
+    pip install -r requirements.txt
+
+This takes 5-10 minutes. Let it finish.
+
+
+================================================================
+STEP 4 — START THE CHATBOT
+================================================================
+
+Make sure you are still in the backend/ folder with (venv) active.
+
+Start Ollama (if it is not already running):
+
+    ollama serve
+
+Open a second terminal, go to backend/, activate venv again, then run:
+
+    uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+You should see:
+    INFO: Uvicorn running on http://0.0.0.0:8000
+
+
+================================================================
+STEP 5 — OPEN THE CHATBOT
+================================================================
+
+Open your browser and go to:
+
+    http://localhost:8000
+
+The hacker terminal UI will load.
+
+
+================================================================
+STEP 6 — USE THE CHATBOT
+================================================================
+
+Without a document:
+    - Just type a question and press ENTER
+    - The AI answers from its general knowledge (Direct LLM mode)
+
+With a document (RAG mode):
+    - Drag and drop a PDF or TXT file into the left sidebar
+    - Wait for the "MODE: RAG" indicator to appear
+    - Now ask questions — the AI answers from YOUR document
+
+
+================================================================
+DOCKER SETUP (Alternative to Steps 3 & 4)
+================================================================
+
+If you have Docker installed, skip Steps 3 & 4 entirely.
+From the root rag-chatbot/ folder, just run:
+
+    docker-compose up --build
+
+Then open http://localhost:8000 in your browser.
+
+To stop:
+    docker-compose down
+
+
+================================================================
+FOLDER STRUCTURE — WHAT GOES WHERE
+================================================================
+
 rag-chatbot/
-├── backend/
-│   ├── main.py               # FastAPI routes
-│   ├── rag.py                # RAG pipeline logic
-│   ├── requirements.txt      # Python dependencies
-│   └── Dockerfile
+│
+├── backend/              PUT NOTHING HERE MANUALLY
+│   ├── main.py           The API server (do not edit unless needed)
+│   ├── rag.py            The RAG logic (do not edit unless needed)
+│   ├── requirements.txt  Python packages list
+│   └── Dockerfile        Docker build instructions
+│
 ├── frontend/
-│   └── index.html            # Hacker terminal UI
-├── chromadb_data/            # Persisted vector embeddings
-├── uploads/                  # Uploaded documents
-└── docker-compose.yml
-```
+│   └── index.html        The chat UI — open this in a browser
+│                         if not using the FastAPI server
+│
+├── chromadb_data/        AUTO-CREATED when you upload a document
+│                         Stores your document embeddings locally
+│                         Do not delete unless you want to reset
+│
+├── uploads/              AUTO-CREATED when you upload a document
+│                         Stores your uploaded PDF/TXT files
+│
+├── docker-compose.yml    Used only if running with Docker
+├── README.md             Project overview
+└── SETUP.txt             This file
 
----
 
-## ◈ Getting Started
+================================================================
+COMMON ERRORS AND FIXES
+================================================================
 
-### Prerequisites
-- [Ollama](https://ollama.com) installed and running
-- [Docker](https://docker.com) installed (optional)
-- Python 3.11+
+Error: "Connection refused on port 11434"
+Fix:   Ollama is not running. Run: ollama serve
 
-### 1 · Pull the model
+Error: "model gemma:2b not found"
+Fix:   Run: ollama pull gemma:2b
 
-```bash
-ollama pull gemma:2b
-```
+Error: "venv\Scripts\Activate.ps1 cannot be loaded"
+Fix:   Run first: Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 
-### 2 · Install dependencies
+Error: "ModuleNotFoundError"
+Fix:   You forgot to activate venv, or pip install did not finish.
+       Activate venv and run: pip install -r requirements.txt again
 
-```bash
-cd backend
-python -m venv venv
+Error: "host.docker.internal not found" (Linux only)
+Fix:   In docker-compose.yml, set network_mode: host
+       and change OLLAMA_BASE_URL to http://localhost:11434
 
-# Windows
-.\venv\Scripts\Activate.ps1
+Error: Responses are very slow
+Fix:   Normal on CPU. gemma:2b is the smallest/fastest model.
+       Just wait — it will respond.
 
-# Mac / Linux
-source venv/bin/activate
 
-pip install -r requirements.txt
-```
+================================================================
+TO STOP THE CHATBOT
+================================================================
 
-### 3 · Run the server
+In the terminal running uvicorn, press:
 
-```bash
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-```
+    Ctrl + C
 
-### 4 · Open the chatbot
+That's it.
 
-Navigate to **http://localhost:8000** in your browser.
 
----
+================================================================
+EVERY TIME YOU WANT TO START AGAIN
+================================================================
 
-## ◈ Docker Setup
+1.  ollama serve                          (in any terminal)
+2.  cd rag-chatbot/backend
+3.  .\venv\Scripts\Activate.ps1          (Windows PowerShell)
+    or: source venv/bin/activate         (Mac/Linux)
+4.  uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+5.  Open http://localhost:8000
 
-```bash
-# Build and start everything
-docker-compose up --build
-
-# Stop
-docker-compose down
-```
-
-> **Linux users:** If `host.docker.internal` fails, set `network_mode: host` in `docker-compose.yml` and use `OLLAMA_BASE_URL=http://localhost:11434`
-
----
-
-## ◈ How RAG Works
-
-```
-  [ Your PDF / TXT ]
-         │
-         ▼
-  [ Split into chunks ]  ◄─ 500 chars, 50 overlap
-         │
-         ▼
-  [ Embed with MiniLM ]  ◄─ Runs locally
-         │
-         ▼
-  [ Store in ChromaDB ]
-         │
-    (query time)
-         │
-  [ Embed your question ]
-         │
-         ▼
-  [ Find top-4 similar chunks ]
-         │
-         ▼
-  [ Feed chunks + question → Gemma ]
-         │
-         ▼
-  [ Answer grounded in your document ]
-```
-
----
-
-## ◈ Usage
-
-1. Start Ollama — `ollama serve`
-2. Start backend — `uvicorn main:app --port 8000 --reload`
-3. Open `http://localhost:8000`
-4. **Drag and drop** a PDF or TXT file into the sidebar
-5. Wait for the `MODE: RAG` indicator to activate
-6. Ask questions about your document
-
----
-
-## ◈ Environment Variables
-
-| Variable | Default | Description |
-|---|---|---|
-| `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server URL |
-| `MODEL_NAME` | `gemma:2b` | Model to use |
-
----
-
-## ◈ Common Issues
-
-| Error | Fix |
-|---|---|
-| `Connection refused :11434` | Run `ollama serve` |
-| `model not found` | Run `ollama pull gemma:2b` |
-| `host.docker.internal` fails | Use `network_mode: host` on Linux |
-| Slow responses | Normal on CPU — gemma:2b is the fastest option |
-
----
-
-<div align="center">
-
-`Built for AI Advanced Skill Development Lab`
-
-<img src="https://img.shields.io/badge/GEMMA-2B-9b30ff?style=flat-square&labelColor=050508"/>
-<img src="https://img.shields.io/badge/OLLAMA-LOCAL-bf6fff?style=flat-square&labelColor=050508"/>
-<img src="https://img.shields.io/badge/CHROMADB-VECTOR_STORE-7b10df?style=flat-square&labelColor=050508"/>
-<img src="https://img.shields.io/badge/LANGCHAIN-RAG-c77dff?style=flat-square&labelColor=050508"/>
-
-</div>
+================================================================
